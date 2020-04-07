@@ -11,10 +11,6 @@ desenvolvedores = [
         'nome': 'Rafael Cordas',
         'habilidades': ['Javascript', 'HTML']
     },
-    {
-        'nome': 'Ana Silva',
-        'habilidades': ['PHP', 'HTML', 'CSS']
-    }
 ]
 
 @app.route('/dev')
