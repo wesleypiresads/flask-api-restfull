@@ -2,49 +2,63 @@ from flask import Flask, jsonify, request, json
 
 app = Flask(__name__)
 
-desenvolvedores = [
+produtos = [
     {
         'id': 0,
-        'nome': 'Wesley Pires',
-        'habilidades': ['Python', 'Flask']
+        'marca': 'Samsung',
+        'modelo': 'J5 Prime',
+        'preco': 380.00
     },
     {
         'id': 1,
-        'nome': 'Rafael Cordas',
-        'habilidades': ['Javascript', 'HTML']
-    },
+        'marca': 'Motorola',
+        'modelo': 'Moto G4',
+        'preco': 300.00
+    }
 ]
 
-@app.route('/dev/<int:id>/', methods=['GET', 'PUT', 'DELETE'])
-def desenvolvedor(id):
+# Método GET para exibir todos os produtos
+@app.route('/')
+def index():
+    return jsonify(produtos)
+
+# Método GET com id para exibir um produto específico
+@app.route('/produto/<int:id>/', methods=['GET'])
+def produto(id):
     if request.method == 'GET':
         try:
-            response = desenvolvedores[id]
+            response = produtos[id]
         except IndexError:
-            mensagem = 'Desenvolvedor de ID {} não existe'.format(id)
-            response = {'mensagem': mensagem}
+            response = {'mensagem': 'Nao existe o produto com o codigo: {}'.format(id)}
         return jsonify(response)
 
-    elif request.method == 'PUT':
-        dados = json.loads(request.data)
-        desenvolvedores[id] = dados
-        return jsonify(dados)
-
-    elif request.method == 'DELETE':
-        desenvolvedores.pop(id)
-        return jsonify({'mensagem': 'Registro excluído'})
-
-@app.route('/dev/', methods=['POST', 'GET'])
-def lista_desenvolvedores():
+# Método POST para adicionar um produto
+@app.route('/produto/', methods=['POST'])
+def InsertProduto():
     if request.method == 'POST':
-        dados = json.loads(request.data)
-        posicao = len(desenvolvedores)
-        dados[id] = posicao
-        desenvolvedores.append(dados)
-        return jsonify(desenvolvedores[posicao])
+        getProduto = json.loads(request.data)
+        idProduto = len(produtos)
+        getProduto['id'] = idProduto
+        produtos.append(getProduto)
+        return jsonify(getProduto)
 
-    elif request.method == 'GET':
-        return jsonify(desenvolvedores)
+# Método PUT para alterar um produto
+@app.route('/produto/<int:id>/', methods=['PUT'])
+def UpdateProduto(id):
+    if request.method == 'PUT':
+        getProduto = json.loads(request.data)
+        produtos[id] = getProduto
+        return jsonify(getProduto)
 
+# Método DELETE para excluir um produto
+@app.route('/produto/<int:id>/', methods=['DELETE'])
+def DelProduto(id):
+    if request.method == 'DELETE':
+        produtos.pop(id)
+        response = {'mensagem': 'O produto de codigo: {} foi excluído'.format(id)}
+        return jsonify(response)
+
+
+# Start o servidor com debug ativa para ambiente de desenvolvimento
 if __name__ == "__main__":
     app.run(debug=True)
